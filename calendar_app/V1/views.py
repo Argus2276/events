@@ -9,8 +9,10 @@ from calendar_app.V1.serializers import (
     LocationSerializer,
     EventWriteSerializer,
     EventNewsWriteSerializer,
+    NewsSerializer,
 )
 from calendar_app.models import Event
+from news_app.models import News
 from .permissions import IsOwnerOrEditor
 from .service import EventNewsCreate, create_event_news_role
 
@@ -21,7 +23,6 @@ class EventListCreateView(generics.ListCreateAPIView):
         "owner",
     ).prefetch_related(
         "participants",
-        "moderators",
         "news",
     )
 
@@ -36,9 +37,10 @@ class EventListCreateView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         news_data = data.pop("news", [])
+        participants_data = data.pop("participants", [])
         result = create_event_news_role(
             user=request.user,
-            event_data=data,
+            event_data={**data, "participants": participants_data},
             news_data=news_data,
         )
         read_serializer = EventReadSerializer(result.event)
@@ -57,7 +59,12 @@ class EventView(generics.RetrieveUpdateDestroyAPIView):
         "owner",
     ).prefetch_related(
         "participants",
-        "moderators",
         "news",
     )
+
     serializer_class = EventWriteSerializer
+
+
+class NewsCreateListView(generics.ListCreateAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer

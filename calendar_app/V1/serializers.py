@@ -36,17 +36,26 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ("id", "user", "job")
 
 
+# class NewsForEventSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = News
+#         fields = (
+#             "id",
+#             "name",
+#             "information",
+#         )
+
+
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
-        fields = ("name", "information", "published_date")
+        fields = ("id", "name", "information", "connected_events")
 
 
 class EventReadSerializer(serializers.ModelSerializer):
     location = LocationSerializer(read_only=True)
     owner = CustomUserSerializer(read_only=True)
     participants = CustomUserSerializer(read_only=True, many=True)
-    moderators = CustomUserSerializer(read_only=True, many=True)
     news = NewsSerializer(read_only=True, many=True)
 
     class Meta:
@@ -58,7 +67,6 @@ class EventReadSerializer(serializers.ModelSerializer):
             "location",
             "owner",
             "participants",
-            "moderators",
             "news",
             "start_date",
             "end_date",
@@ -66,19 +74,13 @@ class EventReadSerializer(serializers.ModelSerializer):
 
 
 class EventNewsWriteSerializer(serializers.ModelSerializer):
-    news = NewsSerializer(required=False, many=True, source="news_connected_events")
+    news = serializers.ListField(
+        child=serializers.DictField(), required=False, write_only=True
+    )
     participants = serializers.PrimaryKeyRelatedField(
         queryset=UserProfile.objects.all(),
         many=True,
         required=False,
-        source="event_participants",
-    )
-
-    moderators = serializers.PrimaryKeyRelatedField(
-        queryset=UserProfile.objects.all(),
-        many=True,
-        required=False,
-        source="event_moderators",
     )
 
     class Meta:
@@ -88,7 +90,6 @@ class EventNewsWriteSerializer(serializers.ModelSerializer):
             "description",
             "location",
             "participants",
-            "moderators",
             "start_date",
             "end_date",
             "news",

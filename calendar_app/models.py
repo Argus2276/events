@@ -23,9 +23,6 @@ class Event(models.Model):
     participants = models.ManyToManyField(
         "users_app.UserProfile", related_name="event_participants"
     )
-    moderators = models.ManyToManyField(
-        "users_app.UserProfile", related_name="event_moderators"
-    )
     news = models.ManyToManyField(
         "news_app.News", related_name="event_news", blank=True
     )

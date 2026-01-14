@@ -1,6 +1,7 @@
 from rest_framework import permissions
 
 from role_app.models import RoleInEvent
+from users_app.models import UserProfile
 
 
 class IsOwnerOrEditor(permissions.BasePermission):
@@ -9,14 +10,13 @@ class IsOwnerOrEditor(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        user = request.user
+        user_profile = UserProfile.objects.get(user=request.user)
 
-        if obj.owner == user:
+        if obj.owner == user_profile:
             return True
 
         return RoleInEvent.objects.filter(
-            user=user,
+            user=user_profile,
             event=obj,
             role__name="editor",
-            approved=True,
         ).exists()

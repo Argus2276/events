@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from mailings_app.models import Requests
 from .models import Event, Location
 from news_app.models import News
 from users_app.models import UserProfile, Job
@@ -11,3 +13,4 @@ admin.site.register(Job)
 admin.site.register(Role)
 admin.site.register(UserProfile)
 admin.site.register(RoleInEvent)
+admin.site.register(Requests)

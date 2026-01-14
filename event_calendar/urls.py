@@ -18,7 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from calendar_app.V1.views import EventListCreateView, EventView
+from calendar_app.V1.views import EventView, NewsCreateListView, EventListCreateView
+from mailings_app.views import RequestsListView, RequestsRetrieveUpdateDestroyView
 from role_app.views import RoleInEventView
 
 urlpatterns = [
@@ -27,4 +28,11 @@ urlpatterns = [
     path("api/v1/events/", EventListCreateView.as_view(), name="event-list"),
     path("api/v1/events/<int:pk>/", EventView.as_view(), name="event-change"),
     path("roles/", RoleInEventView.as_view(), name="role-list"),
+    path("api/v1/news/", NewsCreateListView.as_view(), name="news-list"),
+    path("api/mailings/", RequestsListView.as_view(), name="request-list"),
+    path(
+        "api/mailings/<int:pk>/",
+        RequestsRetrieveUpdateDestroyView.as_view(),
+        name="request-interact",
+    ),
 ]

@@ -14,9 +14,8 @@ class RoleInEvent(models.Model):
         "users_app.UserProfile", on_delete=models.PROTECT, related_name="roles"
     )
     event = models.ForeignKey(
-        "calendar_app.Event", on_delete=models.PROTECT, related_name="roles"
+        "calendar_app.Event", on_delete=models.CASCADE, related_name="roles"
     )
-    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user} - {self.event.name} - {self.role}"

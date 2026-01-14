@@ -14,20 +14,18 @@ class EventNewsCreate:
 @transaction.atomic
 def create_event_news_role(*, user, event_data: dict, news_data: list[dict]):
 
-    custom_user = UserProfile.objects.select_related("user").get(user=user)
+    user_profile = UserProfile.objects.select_related("user").get(user=user)
     participants = event_data.pop("participants", [])
-    moderators = event_data.pop("moderators", [])
     roles = event_data.pop("roles", [])
-    event = Event.objects.create(owner=custom_user, **event_data)
-    if moderators:
-        event.moderators.set(moderators)
+    event = Event.objects.create(owner=user_profile, **event_data)
     if participants:
         event.participants.set(participants)
     for role in roles:
-        RoleInEvent.objects.create(user=custom_user, event=event, **role)
+        RoleInEvent.objects.create(user=user_profile, event=event, **role)
     news_list = []
     for i in news_data:
-        news = News.objects.create(author=custom_user, **i)
+        news = News.objects.create(author=user_profile, **i)
+        event.news.add(news)
         news.connected_events.add(event)
         news_list.append(news)
     return EventNewsCreate(
