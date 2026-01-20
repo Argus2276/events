@@ -7,3 +7,12 @@ class RequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requests
         fields = "__all__"
+
+
+class RequestWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requests
+        fields = (
+            "event",
+            "requested_role",
+        )

@@ -19,7 +19,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 from calendar_app.V1.views import EventView, NewsCreateListView, EventListCreateView
-from mailings_app.views import RequestsListView, RequestsRetrieveUpdateDestroyView
+from mailings_app.views import (
+    RequestsListView,
+    RequestsRetrieveUpdateDestroyView,
+    CreateRequestView,
+)
 from role_app.views import RoleInEventView
 
 urlpatterns = [
@@ -35,4 +39,5 @@ urlpatterns = [
         RequestsRetrieveUpdateDestroyView.as_view(),
         name="request-interact",
     ),
+    path("api/request", CreateRequestView.as_view(), name="request-create"),
 ]
