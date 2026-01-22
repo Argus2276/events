@@ -12,5 +12,10 @@ class Requests(models.Model):
     requested_date = models.DateField(auto_now_add=True)
     status = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.user_requested}, {self.requested_date}, {self.event}"
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["event", "user_requested", "requested_role"],
+                name="unique_request",
+            )
+        ]

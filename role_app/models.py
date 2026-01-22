@@ -19,3 +19,11 @@ class RoleInEvent(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.event.name} - {self.role}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["role", "user", "event"],
+                name="unique_role",
+            )
+        ]

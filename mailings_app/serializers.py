@@ -16,3 +16,7 @@ class RequestWriteSerializer(serializers.ModelSerializer):
             "event",
             "requested_role",
         )
+
+
+class StatusSerializer(serializers.Serializer):
+    status = serializers.BooleanField()
